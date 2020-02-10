@@ -58,11 +58,52 @@ function accordionEvents() {
       if (panel.style.display === "block") {
         panel.style.display = "none";
       } else {
+        // get next three arrivals
+        getArrivals(this.id, panel);
+        //updateArrivals(this.id, panel);
         panel.style.display = "block";
       }
     });
   }
 }
+
+function getArrivals(lineId, panel) {
+  let url = `https://api.tfl.gov.uk/line/${lineId}/arrivals`;
+  fetch(url)
+  .then(data=>{return data.json()})
+  .then(res=>{updateArrivals(lineId, panel, res)});
+}
+
+function updateArrivals(lineId, panel, json) {
+  // sort by time to arrival and display the three next arrivals
+  json.sort(function(a, b) {
+    return a.timeToStation - b.timeToStation;
+  });
+
+  var arrivalTimes = document.getElementById(`${lineId}Arrivals`);
+  if (!arrivalTimes) {  // create if not exists
+    arrivalTimes = document.createElement("div");
+    arrivalTimes.id = `${lineId}Arrivals`;
+    panel.appendChild(arrivalTimes);
+  } else {
+    while (arrivalTimes.firstChild) {
+      arrivalTimes.removeChild(arrivalTimes.firstChild);
+    }
+  }
+
+  for (let i = 0; i < 3; i++) {
+    // put into panel
+    arrivalTimes.appendChild(document.createElement("br"));
+    arrivalTimes.appendChild(document.createTextNode(`Arriving at: ${json[i].stationName}`));
+    arrivalTimes.appendChild(document.createElement("br"));
+    arrivalTimes.appendChild(document.createTextNode(`Towards: ${json[i].towards}`));
+    arrivalTimes.appendChild(document.createElement("br"));
+    arrivalTimes.appendChild(document.createTextNode(`Current Location: ${json[i].currentLocation}`));
+    arrivalTimes.appendChild(document.createElement("br"));
+    arrivalTimes.appendChild(document.createTextNode(`Time to Arrival: ${json[i].timeToStation}`));
+    arrivalTimes.appendChild(document.createElement("br"));
+  }
+};
 
 function openLineStatus(lineId) {
   document.getElementById(lineId).click();
