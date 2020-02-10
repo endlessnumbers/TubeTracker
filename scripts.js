@@ -5,13 +5,15 @@ window.onload = function getLineStatus() {
   .then(res=>{createTables(res)});
 }
 
+
 function createTables(json) {
   let div = document.createElement("div");
   div.classList.add("statusTable");
   for (let i = 0; i < json.length; i++) {
     let accordion = document.createElement("button");
-    accordion.classList.add("accordion");
+    accordion.id = json[i].name;
     accordion.innerHTML = json[i].name;
+    accordion.classList.add("accordion");
     let panel = document.createElement("div");
     panel.classList.add("panel");
     let details =
@@ -60,4 +62,8 @@ function accordionEvents() {
       }
     });
   }
+}
+
+function openLineStatus(lineId) {
+  document.getElementById(lineId).click();
 }
