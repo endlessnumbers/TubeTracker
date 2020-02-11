@@ -100,7 +100,9 @@ function updateArrivals(lineId, panel, json) {
     arrivalTimes.appendChild(document.createElement("br"));
     arrivalTimes.appendChild(document.createTextNode(`Current Location: ${json[i].currentLocation}`));
     arrivalTimes.appendChild(document.createElement("br"));
-    arrivalTimes.appendChild(document.createTextNode(`Time to Arrival: ${json[i].timeToStation}`));
+    let arriveTime = new Date(json[i].expectedArrival);
+    arrivalTimes.appendChild(document.createTextNode
+      (`Expected Arrival: ${arriveTime.getHours().toString().padStart(2, '0')}:${arriveTime.getMinutes().toString().padStart(2, '0')}:${arriveTime.getSeconds().toString().padStart(2, '0')}`));
     arrivalTimes.appendChild(document.createElement("br"));
   }
 };
